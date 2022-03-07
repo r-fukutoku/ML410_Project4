@@ -141,11 +141,10 @@ def booster(X, y, xnew, kern, tau, model_boosting, nboost):
 # load the variables
 X = df[['cement', 'water']].values
 y = df['concrete_compressive_strength'].values
+xtrain, xtest, ytrain, ytest = train_test_split(X,y,test_size=0.25, random_state=123)
 
 scale = StandardScaler()
 # xscaled = scale.fit_transform(X)
-xtrain, xtest, ytrain, ytest = train_test_split(X,y,test_size=0.25, random_state=123)
-
 model_boosting = RandomForestRegressor(n_estimators=100,max_depth=3)
 
 # nested cross-validations
