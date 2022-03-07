@@ -1,6 +1,3 @@
-1. Create your own multiple boosting algortihm and apply it to combinations of different regressors (for example you can boost regressor 1 with regressor 2 a couple of times) on the "Concrete Compressive Strength" dataset.  Show what was the combination that achieved the best cross-validated results.
-2. (Research) Read about the LightGBM algorithm and include a write-up that explains the method in your own words. Apply the method to the same data set you worked on for part 1. 
-
 # Concepts and Applications of Multiple Boosting and Light GBM
 
 ### Light GBM
@@ -10,8 +7,13 @@ While other algorithms trees grow horizontally, LightGBM algorithm grows vertica
 
 
 
+
+1. Create your own multiple boosting algortihm and apply it to combinations of different regressors (for example you can boost regressor 1 with regressor 2 a couple of times) on the "Concrete Compressive Strength" dataset.  Show what was the combination that achieved the best cross-validated results.
+2. (Research) Read about the LightGBM algorithm and include a write-up that explains the method in your own words. Apply the method to the same data set you worked on for part 1. 
+
+
 ## Applications with Real Data
-Concrete Compressive Strength dataset (output variable (y) is the mileage (MPG)): 
+Concrete Compressive Strength dataset (output variable (y) is the concrete_compressive_strength): 
 
 ```python
 import numpy as np
@@ -20,13 +22,12 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from google.colab import drive
 drive.mount('/content/drive')
-cars = pd.read_csv("drive/MyDrive/DATA410_AdvML/cars.csv")
+df = pd.read_csv("drive/MyDrive/DATA410_AdvML/concrete_data.csv")
 ```
-<img width="234" alt="image" src="https://user-images.githubusercontent.com/98488324/153694695-0e275da1-6379-44db-af1b-92a43d0c0544.png">
+<img width="1035" alt="image" src="https://user-images.githubusercontent.com/98488324/156958221-05f272ba-d0c2-4039-b604-084cb57311e7.png">
 
 
-
-### Multiple BoostingMultiple Boosting
+### Multiple Boosting
 Import libraries and create functions:
 
 ```python
@@ -40,7 +41,6 @@ from sklearn.metrics import mean_squared_error as mse
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.linear_model import LinearRegression, Lasso, Ridge, ElasticNet
-from matplotlib import pyplot
 import xgboost as xgb
 
 # Tricubic Kernel
@@ -62,7 +62,7 @@ def Epanechnikov(x):
   if len(x.shape) == 1:
     x = x.reshape(-1,1)
   d = np.sqrt(np.sum(x**2,axis=1))
-  return np.where(d>1,0,3/4*(1-d**2))
+  return np.where(d>1,0,3/4*(1-d**2)) 
   
 # defining the kernel local regression model
 def lw_reg(X, y, xnew, kern, tau, intercept):
@@ -115,25 +115,45 @@ def boosted_lwr(X, y, xnew, kern, tau, intercept):
   #model = model_xgb
   model.fit(X,new_y)
   output = model.predict(xnew) + lw_reg(X,y,xnew,kern,tau,intercept)
-  return output 
+  return output
+  
+def booster(X, y, xnew, kern, tau, model_boosting, nboost):
+  Fx = lw_reg(X,y,X,kern,tau,True)
+  Fx_new = lw_reg(X,y,xnew,kern,tau,True)
+  new_y = y - Fx
+  output = Fx
+  output_new = Fx_new
+  for i in range(nboost):
+    model_boosting.fit(X,new_y)
+    output += model_boosting.predict(X)
+    output_new += model_boosting.predict(xnew)
+    new_y = y - output
+  return output_new
 ```
 
-#### Apply Cars data:
+#### Apply concrete data:
 
 ```python
-X = cars[['ENG','CYL','WGT']].values
-y = cars['MPG'].values
+X = df[['cement',	'blast_furnace_slag',	'fly_ash',	'water',	'superplasticizer',	'coarse_aggregate',	'fine_aggregate ', 'age']].values
+y = df['concrete_compressive_strength'].values
 
+model_boosting = RandomForestRegressor(n_estimators=100,max_depth=3)
 scale = StandardScaler()
-model_xgb = xgb.XGBRegressor(objective ='reg:squarederror',n_estimators=100,reg_lambda=20,alpha=1,gamma=10,max_depth=3)
+xscaled = scale.fit_transform(X)
 
-# Nested Cross-Validation
+xtrain, xtest, ytrain, ytest = tts(X,y,test_size=0.25, random_state=123)
+
+# model_xgb = xgb.XGBRegressor(objective ='reg:squarederror',n_estimators=100,reg_lambda=20,alpha=1,gamma=10,max_depth=3)
+
+# we want more nested cross-validations
 mse_lwr = []
 mse_blwr = []
 mse_rf = []
-mse_xgb = []
 mse_nn = []
-for i in range(123):
+mse_xgb = []
+mse_NW = []
+
+for i in range(5):
   kf = KFold(n_splits=10,shuffle=True,random_state=i)
   # this is the Cross-Validation Loop
   for idxtrain, idxtest in kf.split(X):
@@ -143,24 +163,36 @@ for i in range(123):
     xtest = X[idxtest]
     xtrain = scale.fit_transform(xtrain)
     xtest = scale.transform(xtest)
-    yhat_lwr = lw_reg(xtrain,ytrain, xtest,Tricubic,tau=1.2,intercept=True)
-    yhat_blwr = boosted_lwr(xtrain,ytrain, xtest,Tricubic,tau=1.2,intercept=True)
-    model_rf = RandomForestRegressor(n_estimators=100,max_depth=3)
-    model_rf.fit(xtrain,ytrain)
-    yhat_rf = model_rf.predict(xtest)
+    dat_train = np.concatenate([xtrain,ytrain.reshape(-1,1)],axis=1)
+    dat_test = np.concatenate([xtest,ytest.reshape(-1,1)],axis=1)
+
+    #yhat_lwr = lw_reg(xtrain,ytrain, xtest,Epanechnikov,tau=0.9,intercept=True)
+    #yhat_blwr = boosted_lwr(xtrain,ytrain, xtest,Epanechnikov,tau=0.9,intercept=True)
+    yhat_blwr = boosted_lwr(xtrain,ytrain,xtest,Tricubic,1,True,model_boosting,2)
+    #model_rf = RandomForestRegressor(n_estimators=100,max_depth=3)
+    #model_rf.fit(xtrain,ytrain)
+    #yhat_rf = model_rf.predict(xtest)
+    model_xgb = xgb.XGBRegressor(objective ='reg:squarederror',n_estimators=100,reg_lambda=20,alpha=1,gamma=10,max_depth=1)
     model_xgb.fit(xtrain,ytrain)
     yhat_xgb = model_xgb.predict(xtest)
-    #model_nn.fit(xtrain,ytrain,validation_split=0.3, epochs=500, batch_size=20, verbose=0, callbacks=[es])
+    #model_nn.fit(xtrain,ytrain,validation_split=0.2, epochs=500, batch_size=10, verbose=0, callbacks=[es])
     #yhat_nn = model_nn.predict(xtest)
-    mse_lwr.append(mse(ytest,yhat_lwr))
+    # here is the application of the N-W regressor
+    #model_KernReg = KernelReg(endog=dat_train[:,-1],exog=dat_train[:,:-1],var_type='ccc',ckertype='gaussian')
+    #yhat_sm, yhat_std = model_KernReg.fit(dat_test[:,:-1])
+    
+    #mse_lwr.append(mse(ytest,yhat_lwr))
     mse_blwr.append(mse(ytest,yhat_blwr))
-    mse_rf.append(mse(ytest,yhat_rf))
+    #mse_rf.append(mse(ytest,yhat_rf))
     mse_xgb.append(mse(ytest,yhat_xgb))
-    #mse_nn.append(mse(ytest,yhat_nn))
-print('The Cross-validated MSE for Lowess is : '+str(np.mean(mse_lwr)))
-print('The Cross-validated MSE for Boosted Lowess is : '+str(np.mean(mse_blwr)))
-print('The Cross-validated MSE for Random Forest is : '+str(np.mean(mse_rf)))
-print('The Cross-validated MSE for Extreme Gradient Boosting (XGBoost) is : '+str(np.mean(mse_xgb)))
+    ##mse_nn.append(mse(ytest,yhat_nn))
+    #mse_NW.append(mse(ytest,yhat_sm))
+#print('The Cross-validated Mean Squared Error for LWR is : '+str(np.mean(mse_lwr)))
+print('The Cross-validated Mean Squared Error for Boosted LWR is : '+str(np.mean(mse_blwr)))
+#print('The Cross-validated Mean Squared Error for RF is : '+str(np.mean(mse_rf)))
+#print('The Cross-validated Mean Squared Error for NN is : '+str(np.mean(mse_nn)))
+print('The Cross-validated Mean Squared Error for XGB is : '+str(np.mean(mse_xgb)))
+#print('The Cross-validated Mean Squared Error for Nadarya-Watson Regressor is : '+str(np.mean(mse_NW)))
 ```
 
 #### Final results: 
@@ -177,88 +209,19 @@ Since we aim to minimize the crossvalidated mean square error (MSE) for the bett
 ### Light GBM
 
 ```python
-from sklearn.metrics import mean_absolute_error
 
-features = ['crime','rooms','residential','industrial','nox','older','distance','highway','tax','ptratio','lstat']
-X = np.array(df[features])
-y = np.array(df['cmedv']).reshape(-1,1)
-dat = np.concatenate([X,y], axis=1)
-
-from sklearn.model_selection import train_test_split as tts
-dat_train, dat_test = tts(dat, test_size=0.3, random_state=1234)
-
-
-mae_lm = []
-
-for idxtrain, idxtest in kf.split(dat):
-  X_train = dat[idxtrain,0]
-  y_train = dat[idxtrain,1]
-  X_test  = dat[idxtest,0]
-  y_test = dat[idxtest,1]
-  lm.fit(X_train.reshape(-1,1),y_train)
-  yhat_lm = lm.predict(X_test.reshape(-1,1))
-  mae_lm.append(mean_absolute_error(y_test, yhat_lm))
-print("Validated MAE Linear Regression: ${:,.2f}".format(1000*np.mean(mae_lm)))
-
-
-mae_lk = []
-
-for idxtrain, idxtest in kf.split(dat):
-  dat_test = dat[idxtest,:]
-  y_test = dat_test[np.argsort(dat_test[:, 0]),1]
-  yhat_lk = model_lowess(dat[idxtrain,:],dat[idxtest,:],Gaussian,0.15)
-  mae_lk.append(mean_absolute_error(y_test, yhat_lk))
-print("Validated MAE Local Kernel Regression: ${:,.2f}".format(1000*np.mean(mae_lk)))
-
-
-mae_xgb = []
-
-for idxtrain, idxtest in kf.split(dat):
-  X_train = dat[idxtrain,0]
-  y_train = dat[idxtrain,1]
-  X_test  = dat[idxtest,0]
-  y_test = dat[idxtest,1]
-  model_xgb.fit(X_train.reshape(-1,1),y_train)
-  yhat_xgb = model_xgb.predict(X_test.reshape(-1,1))
-  mae_xgb.append(mean_absolute_error(y_test, yhat_xgb))
-print("Validated MAE XGBoost Regression: ${:,.2f}".format(1000*np.mean(mae_xgb)))
 ```
-
-```python
-fig, ax = plt.subplots(figsize=(12,9))
-ax.set_xlim(3, 9)
-ax.set_ylim(0, 51)
-ax.scatter(x=df['rooms'], y=df['cmedv'],s=25)
-# ax.plot(X_test, lm.predict(X_test), color='red',label='Linear Regression')
-# ax.plot(dat_test[:,0], yhat_nn, color='lightgreen',lw=2.5,label='Neural Network')
-# ax.plot(dat_test[:,0], model_lowess(dat_train,dat_test,Epanechnikov,0.53), color='orange',lw=2.5,label='Kernel Weighted Regression')
-ax.set_xlabel('Number of Rooms',fontsize=16,color='navy')
-ax.set_ylabel('House Price (Thousands of Dollars)',fontsize=16,color='navy')
-ax.set_title('Boston Housing Prices',fontsize=16,color='purple')
-ax.grid(b=True,which='major', color ='grey', linestyle='-', alpha=0.8)
-ax.grid(b=True,which='minor', color ='grey', linestyle='--', alpha=0.2)
-ax.minorticks_on()
-plt.legend()
-```
-<img width="735" alt="image" src="https://user-images.githubusercontent.com/98488324/156031673-ff6ee123-5b70-4bda-b8c1-9183d3c91266.png">
 
 #### Final results: 
-
-Validated MAE Linear Regression: $4,447.94      
-Validated MAE Local Kernel Regression: $4,090.03      
-Validated MAE XGBoost Regression: $4,179.17      
+    
 
 
 
 ## References
-Brownlee, J. (August 17, 2016). A Gentle Introduction to XGBoost for Applied Machine Learning. [_Machine Learning Mastery_](https://machinelearningmastery.com/gentle-introduction-xgboost-applied-machine-learning/). (https://machinelearningmastery.com/gentle-introduction-xgboost-applied-machine-learning/)
 
-Chugh, A. (Dec 8, 2020). MAE, MSE, RMSE, Coefficient of Determination, Adjusted R Squared — Which Metric is Better? [_Medium_](https://medium.com/analytics-vidhya/mae-mse-rmse-coefficient-of-determination-adjusted-r-squared-which-metric-is-better-cd0326a5697e). (https://medium.com/analytics-vidhya/mae-mse-rmse-coefficient-of-determination-adjusted-r-squared-which-metric-is-better-cd0326a5697e)
+Dwivedi, R. (Jun 26, 2020). What is LightGBM Algorithm, How to use it? [_Analytics Steps_](https://www.analyticssteps.com/blogs/what-light-gbm-algorithm-how-use-it). (https://www.analyticssteps.com/blogs/what-light-gbm-algorithm-how-use-it)
 
-Li, C. A Gentle Introduction to Gradient Boosting. [gradient_boosting.pdf](https://github.com/r-fukutoku/Project3/files/8154698/gradient_boosting.pdf)
-
-Vega, R. D. V. and Rai, A. G. Multivariate Regression. [ Brilliant.org ](https://brilliant.org/wiki/multivariate-regression/). (https://brilliant.org/wiki/multivariate-regression/)
-
+Bachman, E. (June 12, 2017). Which algorithm takes the crown: Light GBM vs XGBOOST? [_Analytics Vidhya_](https://www.analyticsvidhya.com/blog/2017/06/which-algorithm-takes-the-crown-light-gbm-vs-xgboost/). (https://www.analyticsvidhya.com/blog/2017/06/which-algorithm-takes-the-crown-light-gbm-vs-xgboost/)
 
 
 ##### Jekyll Themes
