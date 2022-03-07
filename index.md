@@ -106,6 +106,19 @@ def lw_reg(X, y, xnew, kern, tau, intercept):
       # output[np.isnan(output)] = g(X[np.isnan(output)])
       output[np.isnan(output)] = g(xnew[np.isnan(output)])
     return output
+
+def booster(X, y, xnew, kern, tau, model_boosting, nboost):
+  Fx = lw_reg(X,y,X,kern,tau,True)
+  Fx_new = lw_reg(X,y,xnew,kern,tau,True)
+  new_y = y - Fx
+  output = Fx
+  output_new = Fx_new
+  for i in range(nboost):
+    model_boosting.fit(X,new_y)
+    output += model_boosting.predict(X)
+    output_new += model_boosting.predict(xnew)
+    new_y = y - output
+  return output_new
   
 # defining the kernel boosted lowess regression model
 def boosted_lwr(X, y, xnew, kern, tau, intercept):
@@ -120,19 +133,6 @@ def boosted_lwr(X, y, xnew, kern, tau, intercept):
   model.fit(X,new_y)
   output = model.predict(xnew) + lw_reg(X,y,xnew,kern,tau,intercept)
   return output
-  
-def booster(X, y, xnew, kern, tau, model_boosting, nboost):
-  Fx = lw_reg(X,y,X,kern,tau,True)
-  Fx_new = lw_reg(X,y,xnew,kern,tau,True)
-  new_y = y - Fx
-  output = Fx
-  output_new = Fx_new
-  for i in range(nboost):
-    model_boosting.fit(X,new_y)
-    output += model_boosting.predict(X)
-    output_new += model_boosting.predict(xnew)
-    new_y = y - output
-  return output_new
 ```
 
 #### Apply concrete data:
