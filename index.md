@@ -1,15 +1,31 @@
-# Concepts and Applications of Multiple Boosting and Light GBM
+# Concepts and Applications of Multiple Boosting and LightGBM
 
-### Light GBM
+### LightGBM
 LightGBM algorithm is a gradient boosting framework that makes use of tree based learning algorithms that is considered to be a very powerful algorithm when it comes to computation. It is considered to be a fast processing algorithm.
 
 While other algorithms trees grow horizontally, LightGBM algorithm grows vertically meaning it grows leaf-wise and other algorithms grow level-wise. LightGBM chooses the leaf with large loss to grow. It can lower down more loss than a level wise algorithm when growing the same leaf.
 
+It has become difficult for the traditional algorithms to give results fast, as the size of the data is increasing rapidly day by day. LightGBM is called “Light” because of its computation power and giving results faster. It takes less memory to run and is able to deal with large amounts of data. Most widely used algorithm in Hackathons because the motive of the algorithm is to get good accuracy of results and also brace GPU leaning.
+
+LightGBM is not for a small volume of datasets. It can easily overfit small data due to its sensitivity. It can be used for data having more than 10,000+ rows. There is no fixed threshold that helps in deciding the usage of LightGBM. It can be used for large volumes of data especially when one needs to achieve a high accuracy.
 
 
 
-1. Create your own multiple boosting algortihm and apply it to combinations of different regressors (for example you can boost regressor 1 with regressor 2 a couple of times) on the "Concrete Compressive Strength" dataset.  Show what was the combination that achieved the best cross-validated results.
-2. (Research) Read about the LightGBM algorithm and include a write-up that explains the method in your own words. Apply the method to the same data set you worked on for part 1. 
+
+Light GBM is a fast, distributed, high-performance gradient boosting framework based on decision tree algorithm, used for ranking, classification and many other machine learning tasks.
+
+Since it is based on decision tree algorithms, it splits the tree leaf wise with the best fit whereas other boosting algorithms split the tree depth wise or level wise rather than leaf-wise. So when growing on the same leaf in Light GBM, the leaf-wise algorithm can reduce more loss than the level-wise algorithm and hence results in much better accuracy which can rarely be achieved by any of the existing boosting algorithms. Also, it is surprisingly very fast, hence the word ‘Light’.
+
+Before is a diagrammatic representation by the makers of the Light GBM to explain the difference clearly.
+
+<img width="724" alt="image" src="https://user-images.githubusercontent.com/98488324/156966728-56bb89bf-cadd-4e80-9b1a-d9a00ca4623e.png">
+
+Level-wise tree growth in XGBOOST.
+
+<img width="796" alt="image" src="https://user-images.githubusercontent.com/98488324/156966754-a40a439b-7364-4cc8-85da-7fe520dfd817.png">
+
+Leaf wise tree growth in LightGBM.
+
 
 
 ## Applications with Real Data
@@ -143,8 +159,6 @@ xscaled = scale.fit_transform(X)
 
 xtrain, xtest, ytrain, ytest = tts(X,y,test_size=0.25, random_state=123)
 
-# model_xgb = xgb.XGBRegressor(objective ='reg:squarederror',n_estimators=100,reg_lambda=20,alpha=1,gamma=10,max_depth=3)
-
 # we want more nested cross-validations
 mse_lwr = []
 mse_blwr = []
@@ -202,9 +216,11 @@ The Cross-validated Mean Squared Error for XGB is : 172.00290255220014
 
 Since we aim to minimize the crossvalidated mean square error (MSE) for the better results, I conclude that Extreme Gradient Boosting (XGBoost) achieved the better result than other regressions including Lowess, Boosted Lowess, and Random Forest. 
        
+1. Create your own multiple boosting algortihm and apply it to combinations of different regressors (for example you can boost regressor 1 with regressor 2 a couple of times) on the "Concrete Compressive Strength" dataset.  Show what was the combination that achieved the best cross-validated results.
+2. (Research) Read about the LightGBM algorithm and include a write-up that explains the method in your own words. Apply the method to the same data set you worked on for part 1. 
 
 
-### Light GBM
+### LightGBM
 
 ```python
 
