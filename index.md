@@ -40,7 +40,7 @@ from scipy.linalg import lstsq
 from scipy.sparse.linalg import lsmr
 from scipy.interpolate import interp1d, griddata, LinearNDInterpolator, NearestNDInterpolator
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import KFold, train_test_split as tts
+from sklearn.model_selection import KFold, train_test_split
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeRegressor
@@ -213,11 +213,14 @@ Since we aim to minimize the crossvalidated mean square error (MSE) for the bett
 ### LightGBM
 
 ```python
+import lightgbm as lgb
 
 ```
 
 #### Final results: 
     
+
+Since we aim to minimize the crossvalidated mean square error (MSE) for the better results, I conclude that lightGBM achieved significantly better result than other regressions including Lowess, Random Forest, and Extreme Gradient Boosting (XGBoost). 
 
 
 
