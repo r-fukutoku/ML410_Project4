@@ -219,6 +219,8 @@ Since we aim to minimize the crossvalidated mean square error (MSE) for the bett
 
 ## References
 
+Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
+
 Dwivedi, R. (Jun 26, 2020). What is LightGBM Algorithm, How to use it? [_Analytics Steps_](https://www.analyticssteps.com/blogs/what-light-gbm-algorithm-how-use-it). (https://www.analyticssteps.com/blogs/what-light-gbm-algorithm-how-use-it)
 
 Bachman, E. (June 12, 2017). Which algorithm takes the crown: Light GBM vs XGBOOST? [_Analytics Vidhya_](https://www.analyticsvidhya.com/blog/2017/06/which-algorithm-takes-the-crown-light-gbm-vs-xgboost/). (https://www.analyticsvidhya.com/blog/2017/06/which-algorithm-takes-the-crown-light-gbm-vs-xgboost/)
