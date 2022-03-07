@@ -168,6 +168,7 @@ for i in range(5):
     dat_train = np.concatenate([xtrain,ytrain.reshape(-1,1)],axis=1)
     dat_test = np.concatenate([xtest,ytest.reshape(-1,1)],axis=1)
 
+    # yhat means prediction value of y
     yhat_lwr = lw_reg(xtrain,ytrain,xtest,Epanechnikov,tau=0.9,intercept=True)
     #yhat_blwr = boosted_lwr(xtrain,ytrain,xtest,Epanechnikov,tau=0.9,intercept=True)
     yhat_blwr = boosted_lwr(xtrain,ytrain,xtest,Tricubic,1,True,model_boosting,2)
