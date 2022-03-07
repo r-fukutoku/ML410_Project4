@@ -197,7 +197,7 @@ print('The Cross-validated Mean Squared Error for XGB is : '+str(np.mean(mse_xgb
 
 #### Final results: 
 
-The Cross-validated Mean Squared Error for Boosted LWR is : 159.44752746465406
+The Cross-validated Mean Squared Error for Boosted LWR is : 159.44752746465406         
 The Cross-validated Mean Squared Error for XGB is : 172.00290255220014
 
 Since we aim to minimize the crossvalidated mean square error (MSE) for the better results, I conclude that Extreme Gradient Boosting (XGBoost) achieved the better result than other regressions including Lowess, Boosted Lowess, and Random Forest. 
