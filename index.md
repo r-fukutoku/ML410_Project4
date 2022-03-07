@@ -9,11 +9,11 @@ Since it is based on decision tree algorithms, it splits the tree leaf wise with
 
 It is called “Light” because of its computation power and giving results faster. It takes less memory to run and is able to deal with large amounts of data. Most widely used algorithm in Hackathons because the motive of the algorithm is to get good accuracy of results and also brace GPU leaning.
 
-Level wise tree growth in XGBOOST:
+Level-wise tree growth in XGBOOST:
 
 <img width="724" alt="image" src="https://user-images.githubusercontent.com/98488324/156966728-56bb89bf-cadd-4e80-9b1a-d9a00ca4623e.png">
 
-Leaf wise tree growth in LightGBM:
+Leaf-wise tree growth in LightGBM:
 
 <img width="796" alt="image" src="https://user-images.githubusercontent.com/98488324/156966754-a40a439b-7364-4cc8-85da-7fe520dfd817.png">
 
