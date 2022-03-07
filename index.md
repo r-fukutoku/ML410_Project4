@@ -159,7 +159,9 @@ mse_xgb = []
 # mse_NW = []
 
 for i in range(5):
+  # k-fold cross validation for a lower bias predictive modeling
   kf = KFold(n_splits=10,shuffle=True,random_state=i)
+  
   # this is the Cross-Validation Loop
   for idxtrain, idxtest in kf.split(X):
     xtrain = X[idxtrain]
@@ -205,7 +207,9 @@ mse_blwr_dt = []
 mse_blwr_xgb = []
 
 for i in range(5):
+  # k-fold cross validation for a lower bias predictive modeling
   kf = KFold(n_splits=10,shuffle=True,random_state=i)
+  
   # this is the Cross-Validation Loop
   for idxtrain, idxtest in kf.split(X):
     xtrain = X[idxtrain]
