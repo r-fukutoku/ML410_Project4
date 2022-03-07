@@ -134,7 +134,7 @@ def booster(X, y, xnew, kern, tau, model_boosting, nboost):
 #### Apply concrete data:
 
 ```python
-X = df[['cement',	'blast_furnace_slag',	'fly_ash',	'water',	'superplasticizer',	'coarse_aggregate',	'fine_aggregate ', 'age']].values
+X = df[['cement', 'water']].values
 y = df['concrete_compressive_strength'].values
 
 model_boosting = RandomForestRegressor(n_estimators=100,max_depth=3)
