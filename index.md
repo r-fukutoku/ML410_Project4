@@ -3,11 +3,7 @@
 ### LightGBM
 LightGBM is a fast, powerful, high-performance gradient boosting framework based on decision tree algorithm. It is used for ranking, classification, and many other machine learning tasks.
 
-While other algorithms' trees grow horizontally, LightGBM algorithm grows vertically meaning it grows leaf-wise and other algorithms grow level-wise. LightGBM chooses the leaf with large loss to grow. It can lower down more loss than a level wise algorithm when growing the same leaf.
-
-Since it is based on decision tree algorithms, it splits the tree leaf wise with the best fit whereas other boosting algorithms split the tree depth wise or level wise rather than leaf-wise. So when growing on the same leaf in Light GBM, the leaf-wise algorithm can reduce more loss than the level-wise algorithm and hence results in much better accuracy which can rarely be achieved by any of the existing boosting algorithms. 
-
-It is called “Light” because of its computation power and giving results faster. It takes less memory to run and is able to deal with large amounts of data. Most widely used algorithm in Hackathons because the motive of the algorithm is to get good accuracy of results and also brace GPU leaning.
+Since it is based on decision tree algorithms, it splits the tree leaf wise with the best fit (the tree grows vertically), whereas other boosting algorithms split the tree depth wise or level wise (their trees grow horizontally). Therefore, when growing on the same leaf in Light GBM, the leaf-wise algorithm can reduce more loss than the level-wise algorithm and hence results in much better accuracy which can rarely be achieved by any of the existing boosting algorithms. 
 
 Level-wise tree growth in XGBOOST:
 
@@ -17,8 +13,9 @@ Leaf-wise tree growth in LightGBM:
 
 <img width="796" alt="image" src="https://user-images.githubusercontent.com/98488324/156966754-a40a439b-7364-4cc8-85da-7fe520dfd817.png">
 
+LightGBM is called “Light” because of its computation power and giving results faster. It takes less memory to run and is able to deal with large amounts of data. It is the most widely used algorithm in Hackathons because the motive of the algorithm is to get good accuracy of results and also brace GPU leaning.
 
-LightGBM is not for a small volume of datasets as it can easily overfit small data due to its sensitivity. There is no fixed threshold that helps in deciding the usage of LightGBM. It can be used for large volumes of data having more than 10,000+ rows, especially when one needs to achieve a high accuracy.
+It is not for a small volume of datasets as it can easily overfit small data due to its sensitivity. There is no fixed threshold that helps in deciding the usage of LightGBM. It can be used for large volumes of data having more than 10,000+ rows, especially when one needs to achieve a high accuracy.
 
 
 ## Applications with Real Data
@@ -152,13 +149,15 @@ xscaled = scale.fit_transform(X)
 
 xtrain, xtest, ytrain, ytest = tts(X,y,test_size=0.25, random_state=123)
 
+# %%timeit -n 1
+
 # we want more nested cross-validations
 mse_lwr = []
 mse_blwr = []
 mse_rf = []
-mse_nn = []
+# mse_nn = []
 mse_xgb = []
-mse_NW = []
+# mse_NW = []
 
 for i in range(5):
   kf = KFold(n_splits=10,shuffle=True,random_state=i)
@@ -173,41 +172,43 @@ for i in range(5):
     dat_train = np.concatenate([xtrain,ytrain.reshape(-1,1)],axis=1)
     dat_test = np.concatenate([xtest,ytest.reshape(-1,1)],axis=1)
 
-    #yhat_lwr = lw_reg(xtrain,ytrain, xtest,Epanechnikov,tau=0.9,intercept=True)
-    #yhat_blwr = boosted_lwr(xtrain,ytrain, xtest,Epanechnikov,tau=0.9,intercept=True)
+    yhat_lwr = lw_reg(xtrain,ytrain,xtest,Epanechnikov,tau=0.9,intercept=True)
+    #yhat_blwr = boosted_lwr(xtrain,ytrain,xtest,Epanechnikov,tau=0.9,intercept=True)
     yhat_blwr = boosted_lwr(xtrain,ytrain,xtest,Tricubic,1,True,model_boosting,2)
-    #model_rf = RandomForestRegressor(n_estimators=100,max_depth=3)
-    #model_rf.fit(xtrain,ytrain)
-    #yhat_rf = model_rf.predict(xtest)
+    model_rf = RandomForestRegressor(n_estimators=100,max_depth=3)
+    model_rf.fit(xtrain,ytrain)
+    yhat_rf = model_rf.predict(xtest)
     model_xgb = xgb.XGBRegressor(objective ='reg:squarederror',n_estimators=100,reg_lambda=20,alpha=1,gamma=10,max_depth=1)
     model_xgb.fit(xtrain,ytrain)
     yhat_xgb = model_xgb.predict(xtest)
-    #model_nn.fit(xtrain,ytrain,validation_split=0.2, epochs=500, batch_size=10, verbose=0, callbacks=[es])
-    #yhat_nn = model_nn.predict(xtest)
+    # model_nn.fit(xtrain,ytrain,validation_split=0.2, epochs=500, batch_size=10, verbose=0, callbacks=[es])
+    # yhat_nn = model_nn.predict(xtest)
     # here is the application of the N-W regressor
-    #model_KernReg = KernelReg(endog=dat_train[:,-1],exog=dat_train[:,:-1],var_type='ccc',ckertype='gaussian')
-    #yhat_sm, yhat_std = model_KernReg.fit(dat_test[:,:-1])
-    
-    #mse_lwr.append(mse(ytest,yhat_lwr))
+    # model_KernReg = KernelReg(endog=dat_train[:,-1],exog=dat_train[:,:-1],var_type='ccc',ckertype='gaussian')
+    # yhat_sm, yhat_std = model_KernReg.fit(dat_test[:,:-1])
+
+    mse_lwr.append(mse(ytest,yhat_lwr))
     mse_blwr.append(mse(ytest,yhat_blwr))
-    #mse_rf.append(mse(ytest,yhat_rf))
+    mse_rf.append(mse(ytest,yhat_rf))
     mse_xgb.append(mse(ytest,yhat_xgb))
-    ##mse_nn.append(mse(ytest,yhat_nn))
-    #mse_NW.append(mse(ytest,yhat_sm))
-#print('The Cross-validated Mean Squared Error for LWR is : '+str(np.mean(mse_lwr)))
+    # mse_nn.append(mse(ytest,yhat_nn))
+    # mse_NW.append(mse(ytest,yhat_sm))
+print('The Cross-validated Mean Squared Error for LWR is : '+str(np.mean(mse_lwr)))
 print('The Cross-validated Mean Squared Error for Boosted LWR is : '+str(np.mean(mse_blwr)))
-#print('The Cross-validated Mean Squared Error for RF is : '+str(np.mean(mse_rf)))
-#print('The Cross-validated Mean Squared Error for NN is : '+str(np.mean(mse_nn)))
+print('The Cross-validated Mean Squared Error for RF is : '+str(np.mean(mse_rf)))
+# print('The Cross-validated Mean Squared Error for NN is : '+str(np.mean(mse_nn)))
 print('The Cross-validated Mean Squared Error for XGB is : '+str(np.mean(mse_xgb)))
-#print('The Cross-validated Mean Squared Error for Nadarya-Watson Regressor is : '+str(np.mean(mse_NW)))
+# print('The Cross-validated Mean Squared Error for Nadarya-Watson Regressor is : '+str(np.mean(mse_NW)))
 ```
 
 #### Final results: 
 
-The Cross-validated Mean Squared Error for Boosted LWR is : 159.44752746465406         
-The Cross-validated Mean Squared Error for XGB is : 172.00290255220014
+The Cross-validated Mean Squared Error for LWR is : 175.482983119759       
+The Cross-validated Mean Squared Error for Boosted LWR is : 159.30179064112733       
+The Cross-validated Mean Squared Error for RF is : 170.1605321899341       
+The Cross-validated Mean Squared Error for XGB is : 172.00290255220014      
 
-Since we aim to minimize the crossvalidated mean square error (MSE) for the better results, I conclude that Extreme Gradient Boosting (XGBoost) achieved the better result than other regressions including Lowess, Boosted Lowess, and Random Forest. 
+Since we aim to minimize the crossvalidated mean square error (MSE) for the better results, I conclude that Boosted Lowess achieved significantly better result than other regressions including Lowess, Random Forest, and Extreme Gradient Boosting (XGBoost). 
        
 1. Create your own multiple boosting algortihm and apply it to combinations of different regressors (for example you can boost regressor 1 with regressor 2 a couple of times) on the "Concrete Compressive Strength" dataset.  Show what was the combination that achieved the best cross-validated results.
 2. (Research) Read about the LightGBM algorithm and include a write-up that explains the method in your own words. Apply the method to the same data set you worked on for part 1. 
