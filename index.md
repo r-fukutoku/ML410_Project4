@@ -138,21 +138,22 @@ def booster(X, y, xnew, kern, tau, model_boosting, nboost):
 #### Apply concrete data:
 
 ```python
+# load the variables
 X = df[['cement', 'water']].values
 y = df['concrete_compressive_strength'].values
 
-model_boosting = RandomForestRegressor(n_estimators=100,max_depth=3)
 scale = StandardScaler()
-xscaled = scale.fit_transform(X)
-
+# xscaled = scale.fit_transform(X)
 xtrain, xtest, ytrain, ytest = train_test_split(X,y,test_size=0.25, random_state=123)
 
-# we want more nested cross-validations
+model_boosting = RandomForestRegressor(n_estimators=100,max_depth=3)
+
+# nested cross-validations
 mse_lwr = []
 mse_blwr = []
 mse_rf = []
-# mse_nn = []
 mse_xgb = []
+# mse_nn = []
 # mse_NW = []
 
 for i in range(5):
@@ -192,8 +193,8 @@ for i in range(5):
 print('The Cross-validated Mean Squared Error for LWR is : '+str(np.mean(mse_lwr)))
 print('The Cross-validated Mean Squared Error for Boosted LWR is : '+str(np.mean(mse_blwr)))
 print('The Cross-validated Mean Squared Error for RF is : '+str(np.mean(mse_rf)))
-# print('The Cross-validated Mean Squared Error for NN is : '+str(np.mean(mse_nn)))
 print('The Cross-validated Mean Squared Error for XGB is : '+str(np.mean(mse_xgb)))
+# print('The Cross-validated Mean Squared Error for NN is : '+str(np.mean(mse_nn)))
 # print('The Cross-validated Mean Squared Error for Nadarya-Watson Regressor is : '+str(np.mean(mse_NW)))
 ```
 
@@ -215,10 +216,30 @@ Since we aim to minimize the crossvalidated mean square error (MSE) for the bett
 ```python
 import lightgbm as lgb
 
+mse_lgb = []
+
+for i in range(5):
+  kf = KFold(n_splits=10,shuffle=True,random_state=i)
+  # this is the Cross-Validation Loop
+  for idxtrain, idxtest in kf.split(X):
+    xtrain = X[idxtrain]
+    ytrain = y[idxtrain]
+    ytest = y[idxtest]
+    xtest = X[idxtest]
+    xtrain = scale.fit_transform(xtrain)
+    xtest = scale.transform(xtest)
+    dat_train = np.concatenate([xtrain,ytrain.reshape(-1,1)],axis=1)
+    dat_test = np.concatenate([xtest,ytest.reshape(-1,1)],axis=1)
+
+    model_lgb = lgb.LGBMClassifier(learning_rate=0.09,max_depth=-5,random_state=42)
+    model_lgb.fit(xtrain,ytrain,eval_set=[(xtest,ytest),(xtrain,ytrain)], verbose=20,eval_metric='logloss')
+    yhat_lgb = model_lgb.predict(xtest)
+    mse_lgb.append(mse(ytest,yhat_lgb))
+  print('The Cross-validated Mean Squared Error for LightGBM is : '+str(np.mean(mse_lgb)))
 ```
 
 #### Final results: 
-    
+
 
 Since we aim to minimize the crossvalidated mean square error (MSE) for the better results, I conclude that lightGBM achieved significantly better result than other regressions including Lowess, Random Forest, and Extreme Gradient Boosting (XGBoost). 
 
