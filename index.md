@@ -1,7 +1,7 @@
 # Concepts and Applications of Multiple Boosting and LightGBM
 
 ### LightGBM
-LightGBM is a fast, powerful, high-performance gradient boosting framework based on decision tree algorithm. It is used for ranking, classification, and many other machine learning tasks.
+LightGBM is a fast, powerful, high-performance gradient boosting framework based on decision tree algorithm. It is used for ranking, regression, classification, and many other machine learning tasks.
 
 Since it is based on decision tree algorithms, it splits the tree leaf wise with the best fit (the tree grows vertically), whereas other boosting algorithms split the tree depth wise or level wise (their trees grow horizontally). Therefore, when growing on the same leaf in Light GBM, the leaf-wise algorithm can reduce more loss than the level-wise algorithm and hence results in much better accuracy which can rarely be achieved by any of the existing boosting algorithms. 
 
@@ -211,35 +211,33 @@ Since we aim to minimize the crossvalidated mean square error (MSE) for the bett
 2. (Research) Read about the LightGBM algorithm and include a write-up that explains the method in your own words. Apply the method to the same data set you worked on for part 1. 
 
 
-### LightGBM
+### LightGBM Regression
 
 ```python
 import lightgbm as lgb
 
 mse_lgb = []
 
-for i in range(5):
-  kf = KFold(n_splits=10,shuffle=True,random_state=i)
-  # this is the Cross-Validation Loop
-  for idxtrain, idxtest in kf.split(X):
-    xtrain = X[idxtrain]
-    ytrain = y[idxtrain]
-    ytest = y[idxtest]
-    xtest = X[idxtest]
-    xtrain = scale.fit_transform(xtrain)
-    xtest = scale.transform(xtest)
-    dat_train = np.concatenate([xtrain,ytrain.reshape(-1,1)],axis=1)
-    dat_test = np.concatenate([xtest,ytest.reshape(-1,1)],axis=1)
+# this is the Cross-Validation Loop
+for idxtrain, idxtest in kf.split(X):
+  xtrain = X[idxtrain]
+  ytrain = y[idxtrain]
+  ytest = y[idxtest]
+  xtest = X[idxtest]
+  xtrain = scale.fit_transform(xtrain)
+  xtest = scale.transform(xtest)
+  dat_train = np.concatenate([xtrain,ytrain.reshape(-1,1)],axis=1)
+  dat_test = np.concatenate([xtest,ytest.reshape(-1,1)],axis=1)
 
-    model_lgb = lgb.LGBMClassifier(learning_rate=0.09,max_depth=-5,random_state=42)
-    model_lgb.fit(xtrain,ytrain,eval_set=[(xtest,ytest),(xtrain,ytrain)], verbose=20,eval_metric='logloss')
-    yhat_lgb = model_lgb.predict(xtest)
-    mse_lgb.append(mse(ytest,yhat_lgb))
-  print('The Cross-validated Mean Squared Error for LightGBM is : '+str(np.mean(mse_lgb)))
+  model_lgb = lgb.LGBMRegressor()
+  model_lgb.fit(xtrain,ytrain)
+  yhat_lgb = model_lgb.predict(xtest)
+  mse_lgb.append(mse(ytest,yhat_lgb))
+print('The Cross-validated Mean Squared Error for LightGBM is : '+str(np.mean(mse_lgb)))
 ```
 
 #### Final results: 
-
+The Cross-validated Mean Squared Error for LightGBM is : 169.08368275827368       
 
 Since we aim to minimize the crossvalidated mean square error (MSE) for the better results, I conclude that lightGBM achieved significantly better result than other regressions including Lowess, Random Forest, and Extreme Gradient Boosting (XGBoost). 
 
