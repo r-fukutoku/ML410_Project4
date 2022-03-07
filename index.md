@@ -145,9 +145,7 @@ model_boosting = RandomForestRegressor(n_estimators=100,max_depth=3)
 scale = StandardScaler()
 xscaled = scale.fit_transform(X)
 
-xtrain, xtest, ytrain, ytest = tts(X,y,test_size=0.25, random_state=123)
-
-# %%timeit -n 1
+xtrain, xtest, ytrain, ytest = train_test_split(X,y,test_size=0.25, random_state=123)
 
 # we want more nested cross-validations
 mse_lwr = []
