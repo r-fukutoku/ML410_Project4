@@ -1,7 +1,7 @@
 # Concepts and Applications of Multiple Boosting and LightGBM
 
 ### LightGBM
-LightGBM is a fast, distributed, high-performance gradient boosting framework based on decision tree algorithm. It is used for ranking, classification and many other machine learning tasks.
+LightGBM is a fast, powerful, high-performance gradient boosting framework based on decision tree algorithm. It is used for ranking, classification, and many other machine learning tasks.
 
 While other algorithms trees grow horizontally, LightGBM algorithm grows vertically meaning it grows leaf-wise and other algorithms grow level-wise. LightGBM chooses the leaf with large loss to grow. It can lower down more loss than a level wise algorithm when growing the same leaf.
 
