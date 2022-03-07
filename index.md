@@ -146,8 +146,9 @@ xtrain, xtest, ytrain, ytest = train_test_split(X,y,test_size=0.25, random_state
 scale = StandardScaler()
 
 # for multiple boosting algortihm, which are combinations of different regressors
-model_boosting = RandomForestRegressor(n_estimators=100,max_depth=3)
-
+model_boosting_rf = RandomForestRegressor(n_estimators=100,max_depth=3)
+model_boosting_dt = DecisionTreeRegressor(max_depth=2,random_state=123)
+model_boosting_xgb = xgb.XGBRegressor(objective ='reg:squarederror',n_estimators=100,reg_lambda=20,alpha=1,gamma=10,max_depth=1)
 
 # nested cross-validations
 mse_lwr = []
@@ -198,6 +199,35 @@ print('The Cross-validated Mean Squared Error for RF is : '+str(np.mean(mse_rf))
 print('The Cross-validated Mean Squared Error for XGB is : '+str(np.mean(mse_xgb)))
 # print('The Cross-validated Mean Squared Error for NN is : '+str(np.mean(mse_nn)))
 # print('The Cross-validated Mean Squared Error for Nadarya-Watson Regressor is : '+str(np.mean(mse_NW)))
+
+mse_blwr_rf = []
+mse_blwr_dt = []
+mse_blwr_xgb = []
+
+for i in range(5):
+  kf = KFold(n_splits=10,shuffle=True,random_state=i)
+  # this is the Cross-Validation Loop
+  for idxtrain, idxtest in kf.split(X):
+    xtrain = X[idxtrain]
+    ytrain = y[idxtrain]
+    ytest = y[idxtest]
+    xtest = X[idxtest]
+    xtrain = scale.fit_transform(xtrain)
+    xtest = scale.transform(xtest)
+    dat_train = np.concatenate([xtrain,ytrain.reshape(-1,1)],axis=1)
+    dat_test = np.concatenate([xtest,ytest.reshape(-1,1)],axis=1)
+
+    yhat_blwr_rf = boosted_lwr(xtrain,ytrain,xtest,Tricubic,1,True,model_boosting_rf,2)
+    yhat_blwr_dt = boosted_lwr(xtrain,ytrain,xtest,Tricubic,1,True,model_boosting_dt,2)
+    yhat_blwr_xgb = boosted_lwr(xtrain,ytrain,xtest,Tricubic,1,True,model_boosting_xgb,2)
+
+    mse_blwr_rf.append(mse(ytest,yhat_blwr_rf))
+    mse_blwr_dt.append(mse(ytest,yhat_blwr_dt))
+    mse_blwr_xgb.append(mse(ytest,yhat_blwr_xgb))
+
+print('The Cross-validated Mean Squared Error for Boosted LWR with Random Forest is : '+str(np.mean(mse_blwr_rf)))
+print('The Cross-validated Mean Squared Error for Boosted LWR with Decision Tree is : '+str(np.mean(mse_blwr_dt)))
+print('The Cross-validated Mean Squared Error for Boosted LWR with XGBoost is : '+str(np.mean(mse_blwr_xgb)))
 ```
 
 #### Final results: 
