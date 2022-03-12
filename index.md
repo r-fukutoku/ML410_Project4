@@ -145,13 +145,7 @@ xtrain, xtest, ytrain, ytest = train_test_split(X,y,test_size=0.25, random_state
 
 scale = StandardScaler()
 
-# for multiple boosting algorithm, which are combinations of different regressors
-model_boosting_rf = RandomForestRegressor(n_estimators=100,max_depth=3)
-model_boosting_dt = DecisionTreeRegressor(max_depth=2, random_state=123)
-model_boosting_xgb = xgb.XGBRegressor(objective ='reg:squarederror',n_estimators=100,reg_lambda=20,alpha=1,gamma=10,max_depth=1)
-
-
-# simple nested cross-validations
+# Simple nested cross-validations
 mse_lwr = []
 mse_rf = []
 mse_xgb = []
@@ -198,9 +192,12 @@ print('The Cross-validated Mean Squared Error for XGB is : '+str(np.mean(mse_xgb
 # print('The Cross-validated Mean Squared Error for Nadarya-Watson Regressor is : '+str(np.mean(mse_NW)))
 
 
-# Multiple boosting algorithm, which are combinations of different regressors
+# Multiple boosting algorithm, which boosts the regression analysis by using the combinations of different regressors
+model_boosting_rf = RandomForestRegressor(n_estimators=100,max_depth=3)
+model_boosting_dt = DecisionTreeRegressor(max_depth=2, random_state=123)
+model_boosting_xgb = xgb.XGBRegressor(objective ='reg:squarederror',n_estimators=100,reg_lambda=20,alpha=1,gamma=10,max_depth=1)
 
-# multiple boosted cross-validations
+# Multiple boosted cross-validations
 mse_blwr_rf = []
 mse_blwr_dt = []
 mse_blwr_xgb = []
@@ -240,7 +237,7 @@ The Cross-validated Mean Squared Error for RF is : 170.1605321899341
 The Cross-validated Mean Squared Error for XGB is : 172.00290255220014      
 (The Cross-validated Mean Squared Error for Boosted LWR is : 159.30179064112733)       
 
-##### Multiple Boosting:        
+___Multiple Boosting:___        
 The Cross-validated Mean Squared Error for Boosted LWR with Random Forest is :        
 The Cross-validated Mean Squared Error for Boosted LWR with Decision Tree is :        
 The Cross-validated Mean Squared Error for Boosted LWR with XGBoost is :         
