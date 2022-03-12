@@ -190,11 +190,11 @@ for i in range(3):
     # mse_nn.append(mse(ytest,yhat_nn))
     # mse_NW.append(mse(ytest,yhat_sm))
     
-print('The Cross-validated Mean Squared Error for LWR is : '+str(np.mean(mse_lwr)))
-print('The Cross-validated Mean Squared Error for RF is : '+str(np.mean(mse_rf)))
-print('The Cross-validated Mean Squared Error for XGB is : '+str(np.mean(mse_xgb)))
-# print('The Cross-validated Mean Squared Error for NN is : '+str(np.mean(mse_nn)))
-# print('The Cross-validated Mean Squared Error for Nadarya-Watson Regressor is : '+str(np.mean(mse_NW)))
+print('The Cross-validated MSE for LWR is : '+str(np.mean(mse_lwr)))
+print('The Cross-validated MSE for RF is : '+str(np.mean(mse_rf)))
+print('The Cross-validated MSE for XGB is : '+str(np.mean(mse_xgb)))
+# print('The Cross-validated MSEr for NN is : '+str(np.mean(mse_nn)))
+# print('The Cross-validated MSE for Nadarya-Watson Regressor is : '+str(np.mean(mse_NW)))
 
 
 # Multiple boosting algorithm, which boosts the regression analysis by using the combinations of different regressors
@@ -230,22 +230,23 @@ for i in range(3):
     mse_blwr_dt.append(mse(ytest,yhat_blwr_dt))
     mse_blwr_xgb.append(mse(ytest,yhat_blwr_xgb))
 
-print('The Cross-validated Mean Squared Error for Boosted LWR with Random Forest is : '+str(np.mean(mse_blwr_rf)))
-print('The Cross-validated Mean Squared Error for Boosted LWR with Decision Tree is : '+str(np.mean(mse_blwr_dt)))
-print('The Cross-validated Mean Squared Error for Boosted LWR with XGBoost is : '+str(np.mean(mse_blwr_xgb)))
+print('The Cross-validated MSE for Boosted LWR with Random Forest is : '+str(np.mean(mse_blwr_rf)))
+print('The Cross-validated MSE for Boosted LWR with Decision Tree is : '+str(np.mean(mse_blwr_dt)))
+print('The Cross-validated MSE for Boosted LWR with XGBoost is : '+str(np.mean(mse_blwr_xgb)))
 ```
 
 #### Final results: 
+* MSE = mean square error
 
 ___Simple Regression:___        
-The Cross-validated Mean Squared Error for LWR is : 164.98028444123733       
-The Cross-validated Mean Squared Error for RF is : 167.14334994759085       
-The Cross-validated Mean Squared Error for XGB is : 168.4544855884694       
+The Cross-validated MSE for LWR is : 164.98028444123733       
+The Cross-validated MSE for RF is : 167.14334994759085       
+The Cross-validated MSE for XGB is : 168.4544855884694       
 
 ___Multiple Boosting:___        
-The Cross-validated Mean Squared Error for Boosted LWR with Random Forest is : 156.3043144868844       
-The Cross-validated Mean Squared Error for Boosted LWR with Decision Tree is : 165.13235870354328        
-The Cross-validated Mean Squared Error for Boosted LWR with XGBoost is : 159.55883222184173         
+The Cross-validated MSE for Boosted LWR with Random Forest is : 156.3043144868844       
+The Cross-validated MSE for Boosted LWR with Decision Tree is : 165.13235870354328        
+The Cross-validated MSE for Boosted LWR with XGBoost is : 159.55883222184173         
 
 Since we aim to minimize the cross-validated mean square error (MSE) for the better results, I conclude that the Boosted Lowess with Random Forest achieved the best result compared to all other regressions, which include not only the simple regressions such as regular Lowess, Random Forest, and Extreme Gradient Boosting (XGBoost), but also the Boosted LWR with Decision Tree and Boosted LWR with XGBoost. 
 
@@ -278,16 +279,16 @@ for i in range(3):
     model_lgb.fit(xtrain,ytrain)
     yhat_lgb = model_lgb.predict(xtest)
     mse_lgb.append(mse(ytest,yhat_lgb))
-  print('The Cross-validated Mean Squared Error for LightGBM is : '+str(np.mean(mse_lgb)))
+  print('The Cross-validated MSE for LightGBM is : '+str(np.mean(mse_lgb)))
 ```
 
 #### Final results: 
-The Cross-validated Mean Squared Error for LightGBM is : 166.5815119572038      
-The Cross-validated Mean Squared Error for LightGBM is : 165.93064825754243      
-The Cross-validated Mean Squared Error for LightGBM is : 166.8056405710257       
+The Cross-validated MSE for LightGBM is : 166.5815119572038      
+The Cross-validated MSE for LightGBM is : 165.93064825754243      
+The Cross-validated MSE for LightGBM is : 166.8056405710257       
 -> The average of these three results is : 166.43926692859065
 
-I expected for lightGBM to indicate the best MSE result, but on the contrary lightGBM did not achieve any better results than most of other regressions I conducted in this project including simple regression (Lowess) and multiple boosting (Boosted Lowess with Random Forest, Boosted LWR with Decision Tree, and Boosted LWR with XGBoost).
+I expected for lightGBM to indicate the best MSE result in this project, but on the contrary lightGBM did not achieve any better results than most of other regressions I conducted including simple regression (Lowess) and multiple boosting (Boosted Lowess with Random Forest, Boosted LWR with Decision Tree, and Boosted LWR with XGBoost).
 
 
 
