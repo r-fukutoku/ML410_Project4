@@ -13,7 +13,8 @@ Leaf-wise tree growth in LightGBM:
 
 <img width="796" alt="image" src="https://user-images.githubusercontent.com/98488324/156966754-a40a439b-7364-4cc8-85da-7fe520dfd817.png">
 
-LightGBM is called “Light” because of its computation power and giving results faster. It takes less memory to run and is able to deal with large amounts of data. It is not for a small volume of datasets as it can easily overfit small data due to its sensitivity. It can be used for large volumes of data having more than 10,000+ rows, especially when one needs to achieve a high accuracy of results. It is the most widely used algorithm in Hackathons because the motive of the algorithm is to get good accuracy of results and also brace GPU leaning.
+LightGBM is called “Light” because of its computation power and giving results faster. It takes less memory to run and is able to deal with large volumes of data having more than 10,000+ rows, especially when one needs to achieve a high accuracy of results. It is not for a small volume of datasets as it can easily overfit small data due to its sensitivity. It is the most widely used algorithm in Hackathons since the motive of the algorithm is to get good accuracy of results and also brace GPU leaning.
+
 
 
 ## Applications with Real Data
