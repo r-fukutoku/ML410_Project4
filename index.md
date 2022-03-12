@@ -148,6 +148,7 @@ xtrain, xtest, ytrain, ytest = train_test_split(X,y,test_size=0.25, random_state
 
 scale = StandardScaler()
 
+
 # Simple nested cross-validations
 mse_lwr = []
 mse_rf = []
@@ -235,18 +236,17 @@ print('The Cross-validated Mean Squared Error for Boosted LWR with XGBoost is : 
 
 #### Final results: 
 
-___Simple regression:___        
-The Cross-validated Mean Squared Error for LWR is : 164.98028444123733
-The Cross-validated Mean Squared Error for RF is : 167.14334994759085
-The Cross-validated Mean Squared Error for XGB is : 168.4544855884694
+___Simple Regression:___        
+The Cross-validated Mean Squared Error for LWR is : 164.98028444123733       
+The Cross-validated Mean Squared Error for RF is : 167.14334994759085       
+The Cross-validated Mean Squared Error for XGB is : 168.4544855884694       
 
 ___Multiple Boosting:___        
 The Cross-validated Mean Squared Error for Boosted LWR with Random Forest is : 156.3043144868844       
 The Cross-validated Mean Squared Error for Boosted LWR with Decision Tree is : 165.13235870354328        
 The Cross-validated Mean Squared Error for Boosted LWR with XGBoost is : 159.55883222184173         
 
-
-Since we aim to minimize the crossvalidated mean square error (MSE) for the better results, I conclude that Boosted Lowess achieved significantly better result than other regressions including Lowess, Random Forest, and Extreme Gradient Boosting (XGBoost). 
+Since we aim to minimize the cross-validated mean square error (MSE) for the better results, I conclude that the Boosted Lowess with Random Forest achieved the best result compared to all other regressions, which include not only the simple regressions such as regular Lowess, Random Forest, and Extreme Gradient Boosting (XGBoost), but also the Boosted LWR with Decision Tree and Boosted LWR with XGBoost. 
        
        
        
@@ -291,7 +291,7 @@ The Cross-validated Mean Squared Error for LightGBM is : 165.93064825754243
 The Cross-validated Mean Squared Error for LightGBM is : 166.8056405710257       
 -> The average of these three results is : 166.43926692859065
 
-Since we aim to minimize the crossvalidated mean square error (MSE) for the better results, I conclude that lightGBM achieved significantly better result than other regressions including Lowess, Random Forest, and Extreme Gradient Boosting (XGBoost). 
+I expected for lightGBM to indicate the best MSE result, but on the contrary lightGBM did not achieve any better result than most of other regressions including simple regressions (Lowess, Random Forest, and Extreme Gradient Boosting (XGBoost)) and multiple boosting ( Boosted Lowess with Random Forest, Boosted LWR with Decision Tree, and Boosted LWR with XGBoost).
 
 
 
