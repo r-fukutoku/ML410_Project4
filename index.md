@@ -286,7 +286,7 @@ for i in range(3):
 The Cross-validated MSE for LightGBM is : 166.5815119572038      
 The Cross-validated MSE for LightGBM is : 165.93064825754243      
 The Cross-validated MSE for LightGBM is : 166.8056405710257       
--> The average of these three results is : 166.43926692859065
+-> The average Cross-validated MSE of these three results is : 166.43926692859065
 
 I expected for lightGBM to indicate the best MSE result in this project, but on the contrary lightGBM did not achieve any better results than most of other regressions I conducted including simple regression (Lowess) and multiple boosting (Boosted Lowess with Random Forest, Boosted LWR with Decision Tree, and Boosted LWR with XGBoost).
 
