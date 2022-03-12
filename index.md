@@ -33,6 +33,8 @@ df = pd.read_csv("drive/MyDrive/DATA410_AdvML/concrete_data.csv")
 
 
 ### Multiple Boosting
+Boosting is an ensemble meta-algorithm for primarily reducing bias, and Multiple Boosting algorithm boosts the regression analysis by using the combinations of different regressors. 
+
 Import libraries and create functions:
 
 ```python
@@ -135,11 +137,12 @@ def boosted_lwr(X, y, xnew, kern, tau, intercept):
   return output
 ```
 
+
 #### Apply concrete data:
 
 ```python
 # load the variables
-X = df[['cement', 'water']].values
+X = df[['cement', 'water', 'coarse_aggregate']].values
 y = df['concrete_compressive_strength'].values
 xtrain, xtest, ytrain, ytest = train_test_split(X,y,test_size=0.25, random_state=123)
 
@@ -232,15 +235,15 @@ print('The Cross-validated Mean Squared Error for Boosted LWR with XGBoost is : 
 
 #### Final results: 
 
-The Cross-validated Mean Squared Error for LWR is : 175.482983119759       
-The Cross-validated Mean Squared Error for RF is : 170.1605321899341       
-The Cross-validated Mean Squared Error for XGB is : 172.00290255220014      
-(The Cross-validated Mean Squared Error for Boosted LWR is : 159.30179064112733)       
+___Simple regression:___        
+The Cross-validated Mean Squared Error for LWR is : 164.98028444123733
+The Cross-validated Mean Squared Error for RF is : 167.14334994759085
+The Cross-validated Mean Squared Error for XGB is : 168.4544855884694
 
 ___Multiple Boosting:___        
-The Cross-validated Mean Squared Error for Boosted LWR with Random Forest is :        
-The Cross-validated Mean Squared Error for Boosted LWR with Decision Tree is :        
-The Cross-validated Mean Squared Error for Boosted LWR with XGBoost is :         
+The Cross-validated Mean Squared Error for Boosted LWR with Random Forest is : 156.3043144868844       
+The Cross-validated Mean Squared Error for Boosted LWR with Decision Tree is : 165.13235870354328        
+The Cross-validated Mean Squared Error for Boosted LWR with XGBoost is : 159.55883222184173         
 
 
 Since we aim to minimize the crossvalidated mean square error (MSE) for the better results, I conclude that Boosted Lowess achieved significantly better result than other regressions including Lowess, Random Forest, and Extreme Gradient Boosting (XGBoost). 
@@ -283,7 +286,10 @@ for i in range(3):
 ```
 
 #### Final results: 
-The Cross-validated Mean Squared Error for LightGBM is : 169.08368275827368       
+The Cross-validated Mean Squared Error for LightGBM is : 166.5815119572038      
+The Cross-validated Mean Squared Error for LightGBM is : 165.93064825754243      
+The Cross-validated Mean Squared Error for LightGBM is : 166.8056405710257       
+-> The average of these three results is : 166.43926692859065
 
 Since we aim to minimize the crossvalidated mean square error (MSE) for the better results, I conclude that lightGBM achieved significantly better result than other regressions including Lowess, Random Forest, and Extreme Gradient Boosting (XGBoost). 
 
