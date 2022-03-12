@@ -36,7 +36,7 @@ df = pd.read_csv("drive/MyDrive/DATA410_AdvML/concrete_data.csv")
 Import libraries and create functions:
 
 ```python
-# Import libraries
+# import libraries
 from scipy.linalg import lstsq
 from scipy.sparse.linalg import lsmr
 from scipy.interpolate import interp1d, griddata, LinearNDInterpolator, NearestNDInterpolator
