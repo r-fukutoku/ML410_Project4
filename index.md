@@ -189,6 +189,7 @@ for i in range(3):
     mse_xgb.append(mse(ytest,yhat_xgb))
     # mse_nn.append(mse(ytest,yhat_nn))
     # mse_NW.append(mse(ytest,yhat_sm))
+    
 print('The Cross-validated Mean Squared Error for LWR is : '+str(np.mean(mse_lwr)))
 print('The Cross-validated Mean Squared Error for RF is : '+str(np.mean(mse_rf)))
 print('The Cross-validated Mean Squared Error for XGB is : '+str(np.mean(mse_xgb)))
@@ -247,11 +248,6 @@ The Cross-validated Mean Squared Error for Boosted LWR with Decision Tree is : 1
 The Cross-validated Mean Squared Error for Boosted LWR with XGBoost is : 159.55883222184173         
 
 Since we aim to minimize the cross-validated mean square error (MSE) for the better results, I conclude that the Boosted Lowess with Random Forest achieved the best result compared to all other regressions, which include not only the simple regressions such as regular Lowess, Random Forest, and Extreme Gradient Boosting (XGBoost), but also the Boosted LWR with Decision Tree and Boosted LWR with XGBoost. 
-       
-       
-       
-1. Create your own multiple boosting algortihm and apply it to combinations of different regressors (for example you can boost regressor 1 with regressor 2 a couple of times) on the "Concrete Compressive Strength" dataset.  Show what was the combination that achieved the best cross-validated results.
-2. (Research) Read about the LightGBM algorithm and include a write-up that explains the method in your own words. Apply the method to the same data set you worked on for part 1. 
 
 
 
