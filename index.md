@@ -36,7 +36,7 @@ df = pd.read_csv("drive/MyDrive/DATA410_AdvML/concrete_data.csv")
 Import libraries and create functions:
 
 ```python
-# import libraries
+# Import libraries
 from scipy.linalg import lstsq
 from scipy.sparse.linalg import lsmr
 from scipy.interpolate import interp1d, griddata, LinearNDInterpolator, NearestNDInterpolator
@@ -69,7 +69,7 @@ def Epanechnikov(x):
   d = np.sqrt(np.sum(x**2,axis=1))
   return np.where(d>1,0,3/4*(1-d**2)) 
   
-# defining the kernel local regression model
+# Lowess regression model
 def lw_reg(X, y, xnew, kern, tau, intercept):
     # tau is called bandwidth K((x-x[i])/(2*tau))
     n = len(X) # the number of observations
@@ -108,6 +108,7 @@ def lw_reg(X, y, xnew, kern, tau, intercept):
       output[np.isnan(output)] = g(xnew[np.isnan(output)])
     return output
 
+# Booster for the multiple boosting
 def booster(X, y, xnew, kern, tau, model_boosting, nboost):
   Fx = lw_reg(X,y,X,kern,tau,True)
   Fx_new = lw_reg(X,y,xnew,kern,tau,True)
@@ -121,7 +122,7 @@ def booster(X, y, xnew, kern, tau, model_boosting, nboost):
     new_y = y - output
   return output_new
   
-# defining the kernel boosted lowess regression model
+# Boosted lowess regression model
 def boosted_lwr(X, y, xnew, kern, tau, intercept):
   # we need decision trees
   # for training the boosted method we use X and y
@@ -146,9 +147,12 @@ xtrain, xtest, ytrain, ytest = train_test_split(X,y,test_size=0.25, random_state
 
 scale = StandardScaler()
 
+
+model_boosting = RandomForestRegressor(n_estimators=100,max_depth=3)
+
 # for multiple boosting algortihm, which are combinations of different regressors
 model_boosting_rf = RandomForestRegressor(n_estimators=100,max_depth=3)
-model_boosting_dt = DecisionTreeRegressor(max_depth=2,random_state=123)
+model_boosting_dt = DecisionTreeRegressor(max_depth=2, random_state=123)
 model_boosting_xgb = xgb.XGBRegressor(objective ='reg:squarederror',n_estimators=100,reg_lambda=20,alpha=1,gamma=10,max_depth=1)
 
 # nested cross-validations
