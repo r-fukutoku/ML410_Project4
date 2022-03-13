@@ -138,7 +138,7 @@ def boosted_lwr(X, y, xnew, kern, tau, intercept):
 ```
 
 
-#### Apply concrete data:
+#### Apply Concrete Data:
 
 ```python
 # load the variables
@@ -235,7 +235,7 @@ print('The Cross-validated MSE for Boosted LWR with Decision Tree is : '+str(np.
 print('The Cross-validated MSE for Boosted LWR with XGBoost is : '+str(np.mean(mse_blwr_xgb)))
 ```
 
-#### Final results: 
+#### Final Results: 
 * MSE = mean square error
 
 ___Simple Regression:___        
@@ -253,7 +253,7 @@ Since we aim to minimize the cross-validated mean square error (MSE) for the bet
 
 
 ### LightGBM Regression
-Apply LightGBM algorithm on the same Concrete Compressive Strength dataset:
+Apply LightGBM algorithm on the same Concrete data:
 
 ```python
 import lightgbm as lgb
@@ -282,7 +282,7 @@ for i in range(3):
   print('The Cross-validated MSE for LightGBM is : '+str(np.mean(mse_lgb)))
 ```
 
-#### Final results: 
+#### Final Results: 
 The Cross-validated MSE for LightGBM is : 166.5815119572038      
 The Cross-validated MSE for LightGBM is : 165.93064825754243      
 The Cross-validated MSE for LightGBM is : 166.8056405710257       
