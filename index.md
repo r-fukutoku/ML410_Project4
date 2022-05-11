@@ -294,13 +294,13 @@ I expected for lightGBM to indicate the best MSE result in this project, but on 
 
 ## References
 
-Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml](http://archive.ics.uci.edu/ml). Irvine, CA: University of California, School of Information and Computer Science.
+Dua, D. and Graff, C. (2019). UCI Machine Learning Repository. [http://archive.ics.uci.edu/ml](http://archive.ics.uci.edu/ml). Irvine, CA: University of California, School of Information and Computer Science.
 
-Dwivedi, R. (Jun 26, 2020). What is LightGBM Algorithm, How to use it? Analytics Steps [https://www.analyticssteps.com/blogs/what-light-gbm-algorithm-how-use-it](https://www.analyticssteps.com/blogs/what-light-gbm-algorithm-how-use-it).
+Dwivedi, R. (Jun 26, 2020). What is LightGBM Algorithm, How to use it? Analytics Steps. [https://www.analyticssteps.com/blogs/what-light-gbm-algorithm-how-use-it](https://www.analyticssteps.com/blogs/what-light-gbm-algorithm-how-use-it)
 
-Bachman, E. (June 12, 2017). Which algorithm takes the crown: Light GBM vs XGBOOST? Analytics Vidhya [https://www.analyticsvidhya.com/blog/2017/06/which-algorithm-takes-the-crown-light-gbm-vs-xgboost/](https://www.analyticsvidhya.com/blog/2017/06/which-algorithm-takes-the-crown-light-gbm-vs-xgboost/).
+Bachman, E. (June 12, 2017). Which algorithm takes the crown: Light GBM vs XGBOOST? Analytics Vidhya. [https://www.analyticsvidhya.com/blog/2017/06/which-algorithm-takes-the-crown-light-gbm-vs-xgboost/](https://www.analyticsvidhya.com/blog/2017/06/which-algorithm-takes-the-crown-light-gbm-vs-xgboost/)
 
 
 
-##### Support or Contact
+#### Support or Contact
 Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
